@@ -1,0 +1,16 @@
+{
+  "name": "learning-graphql",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:highwide/learning-graphql.git",
+  "author": "highwide <hochweit728@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon -e js,json,graphql"
+  },
+  "dependencies": {
+    "apollo-server": "^2.16.1",
+    "graphql": "^15.3.0",
+    "nodemon": "^2.0.4"
+  }
+}
