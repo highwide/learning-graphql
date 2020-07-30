@@ -3,7 +3,7 @@ const { ApolloServer } = require(`apollo-server`);
 const typeDefs = `
   type Query {
     totalPhotos: Int!
-    shuffledMembers: [String]!
+    orderedMembers: [String]!
   }
 
   type Mutation {
@@ -16,20 +16,21 @@ let photos = [];
 const resolvers = {
   Query: {
     totalPhotos: () => photos.length,
-    shuffledMembers: () =>
+    orderedMembers: () =>
       [
-        "kachick",
-        "pankona",
         "mtsmfm",
-        "motorollerscalatron",
-        "nkmrh",
+        "pankona",
         "mpls104",
-        "ujihisa",
+        "kachick",
         "geckour",
+        "highwide",
+        "nkmrh",
+        "motorollerscalatron",
         "farmanlab",
         "elliekwon",
-        "highwide",
-      ].sort(() => Math.random() - 0.5),
+        "ujihisa",
+        "motoshima1150"
+      ]
   },
 
   Mutation: {
