@@ -8,7 +8,7 @@ const typeDefs = `
   }
 
   type Mutation {
-    postPhoto(name: String! description: String): Photo!
+    postPhoto(input: PostPhotoInput!): Photo!
   }
 
   type Photo {
@@ -16,6 +16,21 @@ const typeDefs = `
     url: String!
     name: String!
     description: String
+    category: PhotoCategory!
+  }
+
+  input PostPhotoInput {
+    name: String!
+    category: PhotoCategory=PORTRAIT
+    description: String
+  }
+
+  enum PhotoCategory {
+    SELFIE
+    PORTRAIT
+    ACTION
+    LANDSCAPE
+    GRAPHIC
   }
 `;
 
@@ -45,12 +60,11 @@ const resolvers = {
 
   Mutation: {
     postPhoto(_, args) {
-      var newPhoto = {
+      let newPhoto = {
         id: _id++,
-        ...args
+        ...args.input
       }
       photos.push(newPhoto);
-
       return newPhoto;
     },
   },
