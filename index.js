@@ -3,19 +3,29 @@ const { ApolloServer } = require(`apollo-server`);
 const typeDefs = `
   type Query {
     totalPhotos: Int!
+    allPhotos: [Photo!]!
     orderedMembers: [String]!
   }
 
   type Mutation {
-    postPhoto(name: String! description: String): Boolean!
+    postPhoto(name: String! description: String): Photo!
+  }
+
+  type Photo {
+    id: ID!
+    url: String!
+    name: String!
+    description: String
   }
 `;
 
+let _id = 0
 let photos = [];
 
 const resolvers = {
   Query: {
     totalPhotos: () => photos.length,
+    allPhotos: () => photos,
     orderedMembers: () =>
       [
         "mtsmfm",
@@ -35,10 +45,19 @@ const resolvers = {
 
   Mutation: {
     postPhoto(_, args) {
-      photos.push(args);
-      return true;
+      var newPhoto = {
+        id: _id++,
+        ...args
+      }
+      photos.push(newPhoto);
+
+      return newPhoto;
     },
   },
+
+  Photo: {
+    url: parent => `http://yoursite.com/img/${parent.id}.jpg`
+  }
 };
 
 const server = new ApolloServer({
