@@ -1,9 +1,11 @@
 const { ApolloServer } = require(`apollo-server`);
+const { GraphQLScalarType } = require('graphql');
 
 const typeDefs = `
+  scalar DateTime
   type Query {
     totalPhotos: Int!
-    allPhotos: [Photo!]!
+    allPhotos(after: DateTime): [Photo!]!
     orderedMembers: [String]!
   }
 
@@ -18,6 +20,8 @@ const typeDefs = `
     description: String
     category: PhotoCategory!
     postedBy: User!
+    taggedUsers: [User!]!
+    created: DateTime!
   }
 
   type User {
@@ -25,6 +29,7 @@ const typeDefs = `
     name: String
     avatar: String
     postedPhotos: [Photo!]!
+    inPhotos: [Photo!]!
   }
 
   input PostPhotoInput {
@@ -41,6 +46,9 @@ const typeDefs = `
     GRAPHIC
   }
 `;
+
+const serialize = value => new Date(value).toISOString()
+const parseValue = value => new Date(value)
 
 let users = [
   { "githubLogin": "mHattrup", "name": "Mike Hattrup" },
@@ -71,11 +79,17 @@ let photos = [
   }
 ]
 
+var tags = [
+  { "photoID": "1", "userID": "gPlake" },
+  { "photoID": "2", "userID": "sSchmidt" },
+  { "photoID": "2", "userID": "mHattrup" },
+  { "photoID": "2", "userID": "gPlake" }
+]
 
 const resolvers = {
   Query: {
     totalPhotos: () => photos.length,
-    allPhotos: () => photos,
+    allPhotos: (parent, args) => { console.log(args) ;return photos },
     orderedMembers: () =>
       [
         "mtsmfm",
@@ -107,15 +121,31 @@ const resolvers = {
   Photo: {
     url: parent => `http://yoursite.com/img/${parent.id}.jpg`,
     postedBy: parent => {
-      return users.find(u => u.githubLogin === parent.githubUser) 
-    }
+      return users.find(u => u.githubLogin === parent.githubUser)
+    },
+    taggedUsers: parent => tags
+      .filter(tag => tag.photoID === parent.id)
+      .map(tag => tag.userID)
+      .map(userId => users.find(u => u.githubLogin === userId))
   },
 
   User: {
     postedPhotos: parent => {
       return photos.filter(p => p.githubUser === parent.githubLogin)
-    } 
-  }
+    },
+    inPhotos: parent => tags
+      .filter(tag => tag.userID === parent.githubLogin)
+      .map(tag => tag.photoID)
+      .map(photoID => photos.find(p => p.id === photoID))
+  },
+
+  DateTime: new GraphQLScalarType({
+    name: 'DateTime',
+    description: 'A valid date time value',
+    parseValue,
+    serialize,
+    parseLiteral: ast => ast.value
+  })
 };
 
 const server = new ApolloServer({
