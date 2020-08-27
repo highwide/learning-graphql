@@ -9,6 +9,7 @@ type Query {
 
 type Mutation {
   postPhoto(input: PostPhotoInput!): Photo!
+  githubAuth(code: String!): AuthPayload!
 }
 
 type Photo {
@@ -28,6 +29,11 @@ type User {
   avatar: String
   postedPhotos: [Photo!]!
   inPhotos: [Photo!]!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
 }
 
 input PostPhotoInput {

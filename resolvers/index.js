@@ -1,4 +1,5 @@
 const { GraphQLScalarType } = require("graphql");
+const { authorizeWithGithub } = require("../lib");
 const serialize = (value) => new Date(value).toISOString();
 const parseValue = (value) => new Date(value);
 let users = [
@@ -76,6 +77,37 @@ const resolvers = {
       photos.push(newPhoto);
       return newPhoto;
     },
+
+    async githubAuth(parent, { code }, { db }) {
+      let {
+        message,
+        access_token,
+        avatar_url,
+        login,
+        name
+      } = await authorizeWithGithub({
+        client_id: process.env.GITHUB_CLIENT_ID,
+        client_secret: process.env.GITHUB_CLIENT_SECRET,
+        code
+      })
+
+      if (message) {
+        throw new Error(message)
+      }
+
+      let latestUserInfo = {
+        name,
+        githubLogin: login,
+        githubToken: access_token,
+        avatar: avatar_url
+      }
+
+      const { ops:[user] } = await db
+        .collection(`users`)
+        .replaceOne({ githubLogin: login }, latestUserInfo, { upsert: true })
+
+      return { user, token: access_token }
+    }
   },
 
   Photo: {
