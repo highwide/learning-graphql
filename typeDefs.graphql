@@ -1,5 +1,6 @@
 scalar DateTime
 type Query {
+  me: User
   totalPhotos: Int!
   allPhotos(after: DateTime): [Photo!]!
   orderedMembers: [String]!
