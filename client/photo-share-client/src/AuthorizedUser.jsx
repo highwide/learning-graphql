@@ -15,7 +15,7 @@ class AuthorizedUser extends Component {
 
     requestCode() {
         const clientId = "FIX ME to YOUR_GITHUB_CLIENT_ID"
-        window.location = `https://github.com/login/oauth/authrize?client_id-${clientId}&scope=user`
+        window.location = `https://github.com/login/oauth/authorize?client_id-${clientId}&scope=user`
     }
 
     render() {
