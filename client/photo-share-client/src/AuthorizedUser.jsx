@@ -22,12 +22,6 @@ class AuthorizedUser extends Component {
         if (window.location.search.match(/code=/)) {
             this.setState({signingIn: true})
             const code = window.location.search.replace("?code=", "")
-
-            //--- Success
-            // alert(code)
-            // this.props.history.replace('/')
-
-            //--- Failed
             this.githubAuthMutation({variables:{code}})
         }
     }
