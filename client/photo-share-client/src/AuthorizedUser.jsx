@@ -3,6 +3,7 @@ import {withRouter} from 'react-router-dom'
 import {Mutation} from 'react-apollo'
 import {gql} from 'apollo-boost'
 import {ROOT_QUERY} from './App'
+import {Me} from './Me'
 
 const GITHUB_AUTH_MUTATION = gql`
 mutation githubAuth($code:String!) {
@@ -22,12 +23,6 @@ class AuthorizedUser extends Component {
         if (window.location.search.match(/code=/)) {
             this.setState({signingIn: true})
             const code = window.location.search.replace("?code=", "")
-
-            //--- Success
-            // alert(code)
-            // this.props.history.replace('/')
-
-            //--- Failed
             this.githubAuthMutation({variables:{code}})
         }
     }
@@ -45,9 +40,9 @@ class AuthorizedUser extends Component {
                 {mutation => {
                     this.githubAuthMutation = mutation
                     return (
-                        <button onClick={this.requestCode} disabled={this.state.signingIn}>
-                        Sign In with GitHub
-                    </button>
+                        <Me signingIn={this.state.signingIn}
+                            requestCode={this.requestCode}
+                            logout={() => localStorage.removeItem('token')} />
                     )
                 }}
             </Mutation>
