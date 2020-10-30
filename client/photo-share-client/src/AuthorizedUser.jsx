@@ -35,7 +35,7 @@ class AuthorizedUser extends Component {
     render() {
         return (
             <Mutation mutation={GITHUB_AUTH_MUTATION}
-            update={this.autorizationComplete}
+            update={this.authorizationComplete}
             refetchQueries={[{query:ROOT_QUERY}]}>
                 {mutation => {
                     this.githubAuthMutation = mutation
