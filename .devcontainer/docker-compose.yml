@@ -1,0 +1,16 @@
+version: "3.7"
+services:
+  app:
+    init: true
+    build: .
+    command: sleep infinity
+    volumes:
+      - ../:/app
+  yaichi:
+    image: mtsmfm/yaichi
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 80:3000
+  mongo:
+    image: mongo
