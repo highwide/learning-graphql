@@ -12,7 +12,7 @@ const typeDefs = readFileSync(`./typeDefs.graphql`, `UTF-8`);
 async function start() {
   const app = express();
   // run docker run -P mongo and check assigned port with docker ps
-  const MONGO_DB = "mongodb://127.0.0.1:32770/Pankona";
+  const MONGO_DB = process.env["MONGO_DB"] || "mongodb://127.0.0.1:32770/Pankona";
   const client = await MongoClient.connect(MONGO_DB, { useNewUrlParser: true });
   const db = client.db();
 
