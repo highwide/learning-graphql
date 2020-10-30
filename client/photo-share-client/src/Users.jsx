@@ -13,8 +13,18 @@ const ADD_FAKE_USERS_MUTATION = gql`
  }
 `
 
+const updateUserCache = (cache, { data:{ addFakeUsers } }) => {
+    let data = cache.readQuery({ query: ROOT_QUERY })
+    data.totalUsers += addFakeUsers.length
+    data.allUsers = [
+    ...data.allUsers,
+    ...addFakeUsers
+    ]
+    cache.writeQuery({ query: ROOT_QUERY, data })
+}
+
 const Users = () =>
-    <Query query={ROOT_QUERY}>
+    <Query query={ROOT_QUERY} fetchPolicy="cache-and-network">
         {({data, loading, refetch}) => loading ?
             <p>loading users...</p> :
             <UserList
@@ -29,6 +39,8 @@ const UserList = ({count, users, refetchUsers}) =>
         <p>{count} Users</p>
         <button onClick={() => refetchUsers()}>Refetch Users</button>
         <Mutation mutation={ADD_FAKE_USERS_MUTATION}
+                // XXX: For some reason cache changes don't trigger re-rendering
+                //   update={updateUserCache}
                   variables={{ count: 1}}
                   refetchQueries={[{ query: ROOT_QUERY}]}
         >
