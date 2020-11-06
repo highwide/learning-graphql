@@ -1,9 +1,10 @@
 import React, {Component} from 'react'
 import {withRouter} from 'react-router-dom'
-import {Mutation} from 'react-apollo'
+import {Mutation, withApollo} from 'react-apollo'
 import {gql} from 'apollo-boost'
 import {ROOT_QUERY} from './App'
 import {Me} from './Me'
+import {compose} from 'recompose'
 
 const GITHUB_AUTH_MUTATION = gql`
 mutation githubAuth($code:String!) {
@@ -28,21 +29,26 @@ class AuthorizedUser extends Component {
     }
 
     requestCode() {
-        const clientId = "FIX ME to YOUR_GITHUB_CLIENT_ID"
+        const clientId = process.env["REACT_APP_GITHUB_CLIENT_ID"]
         window.location = `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=user`
     }
 
     render() {
         return (
             <Mutation mutation={GITHUB_AUTH_MUTATION}
-            update={this.autorizationComplete}
+            update={this.authorizationComplete}
             refetchQueries={[{query:ROOT_QUERY}]}>
                 {mutation => {
                     this.githubAuthMutation = mutation
                     return (
                         <Me signingIn={this.state.signingIn}
                             requestCode={this.requestCode}
-                            logout={() => localStorage.removeItem('token')} />
+                            logout={() => {
+                                localStorage.removeItem('token')
+                                let data = this.props.client.readQuery({ query: ROOT_QUERY })
+                                data.me = null
+                                this.props.client.writeQuery({ query: ROOT_QUERY, data })
+                            }} />
                     )
                 }}
             </Mutation>
@@ -50,4 +56,4 @@ class AuthorizedUser extends Component {
     }
 }
 
-export default withRouter(AuthorizedUser)
+export default compose(withApollo, withRouter)(AuthorizedUser)
