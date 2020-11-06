@@ -1,4 +1,4 @@
-This repository is for "Learning Grahql" (「初めてのGraphQL」) by O'Reily
+This repository is for "Learning Grahql" (「初めての GraphQL」) by O'Reily
 
 ## How to run
 
