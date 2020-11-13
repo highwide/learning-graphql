@@ -138,8 +138,8 @@ const resolvers = {
 
       await db.collection("users").insert(users);
 
-      users.forEach((user) => {
-        pubsub.publish("user-added", { user });
+      users.forEach((newUser) => {
+        pubsub.publish("user-added",  {newUser} );
       });
 
       return users;
