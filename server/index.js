@@ -4,6 +4,7 @@ require(`dotenv`).config();
 const express = require("express");
 const expressPlayground = require(`graphql-playground-middleware-express`)
   .default;
+const path = require('path');
 
 const resolvers = require("./resolvers");
 const { readFileSync } = require(`fs`);
@@ -44,6 +45,11 @@ async function start() {
       subscriptionEndpoint: `ws://localhost:4000/graphql`,
     })
   );
+
+  app.use(
+    '/img/photos',
+    express.static(path.join(__dirname, 'assets', 'photos'))
+  )
 
   const httpServer = createServer(app);
   server.installSubscriptionHandlers(httpServer);

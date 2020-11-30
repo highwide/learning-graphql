@@ -8,11 +8,17 @@ import AuthorizedUser from "./AuthorizedUser";
 export const ROOT_QUERY = gql`
   query allUsers {
     totalUsers
+    totalPhotos
     allUsers {
       ...userInfo
     }
     me {
       ...userInfo
+    }
+    allPhotos {
+      id
+      name
+      url
     }
   }
 

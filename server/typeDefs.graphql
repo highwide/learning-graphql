@@ -48,6 +48,7 @@ input PostPhotoInput {
   name: String!
   category: PhotoCategory = PORTRAIT
   description: String
+  file: Upload!
 }
 
 enum PhotoCategory {
@@ -57,3 +58,4 @@ enum PhotoCategory {
   LANDSCAPE
   GRAPHIC
 }
+

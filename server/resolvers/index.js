@@ -1,5 +1,7 @@
 const { GraphQLScalarType } = require("graphql");
 const { authorizeWithGithub } = require("../lib");
+const { uploadStream } = require('../lib');
+const path = require('path');
 const fetch = require("node-fetch");
 const serialize = (value) => new Date(value).toISOString();
 const parseValue = (value) => new Date(value);
@@ -83,6 +85,13 @@ const resolvers = {
 
       const { insertedIds } = await db.collection("photos").insert(newPhoto);
       newPhoto.id = insertedIds[0];
+
+      let toPath = path.join(
+        __dirname, '..', 'assets', 'photos', `${newPhoto.id}.jpg`
+      );
+
+      const { stream } = args.input.file;
+      await uploadStream(stream, toPath);
 
       pubsub.publish("photo-added", { newPhoto });
 
