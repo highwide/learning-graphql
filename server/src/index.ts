@@ -1,16 +1,17 @@
-const { ApolloServer, PubSub } = require("apollo-server-express");
-const { MongoClient } = require(`mongodb`);
-require(`dotenv`).config();
-const express = require("express");
-const expressPlayground = require(`graphql-playground-middleware-express`)
-  .default;
-const path = require('path');
+import { ApolloServer, PubSub } from "apollo-server-express";
+import { MongoClient } from "mongodb";
 
-const resolvers = require("./resolvers");
-const { readFileSync } = require(`fs`);
-const typeDefs = readFileSync(`./typeDefs.graphql`, `UTF-8`);
+import dotenv from "dotenv";
+import express from "express";
+import expressPlayground from "graphql-playground-middleware-express"
+import { readFileSync } from "fs";
+import { createServer } from "http";
+import path from "path";
 
-const { createServer } = require("http");
+import resolvers from "./resolvers";
+
+const typeDefs = readFileSync(`./typeDefs.graphql`, "utf8");
+dotenv.config();
 
 async function start() {
   const app = express();

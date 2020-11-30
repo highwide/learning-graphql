@@ -1,7 +1,13 @@
-const fetch = require("node-fetch");
-const fs = require("fs");
+import fetch from "node-fetch";
+import fs from "fs";
 
-const requstGithubToken = (credentials) =>
+type Credentials = {
+  client_id: string;
+  client_secret: string;
+  code: string;
+}
+
+const requstGithubToken = (credentials: Credentials) =>
   fetch(`https://github.com/login/oauth/access_token`, {
     method: `POST`,
     headers: {
@@ -15,7 +21,7 @@ const requstGithubToken = (credentials) =>
       throw new Error(JSON.stringify(err));
     });
 
-const requestGithubUserAccount = (token) =>
+const requestGithubUserAccount = (token: string) =>
   fetch(`https://api.github.com/user`, {
     headers: {
       Authorization: `token ${token}`,
@@ -26,21 +32,20 @@ const requestGithubUserAccount = (token) =>
       throw new Error(JSON.stringify(err));
     });
 
-const authorizeWithGithub = async (credentials) => {
+export const authorizeWithGithub = async (credentials: Credentials) => {
   const { access_token } = await requstGithubToken(credentials);
   const githubUser = await requestGithubUserAccount(access_token);
   return { ...githubUser, access_token };
 };
 
-const uploadStream = (stream, path) =>
-    new Promise((resolve, reject) => {
-        stream.on('error', error => {
-            if (stream.truncated) {
-                fs.unlinkSync(path)
-            }
-            reject(error)
-        }).on('end', resolve)
-        .pipe(fs.createWriteStream(path))
-    })
+export const uploadStream = (stream, path) =>
+  new Promise((resolve, reject) => {
+    stream.on('error', error => {
+      if (stream.truncated) {
+          fs.unlinkSync(path)
+      }
+      reject(error)
+    }).on('end', resolve)
+    .pipe(fs.createWriteStream(path))
+  })
 
-module.exports = { authorizeWithGithub, uploadStream };
