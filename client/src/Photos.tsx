@@ -1,7 +1,6 @@
 import React from 'react'
-import { Query } from 'react-apollo'
-import { gql } from "apollo-boost";
-import { ROOT_QUERY } from './App'
+import { gql } from "@apollo/client"
+import { Query } from '@apollo/client/react/components';
 
 const ALL_PHOTOS_QUERY = gql`
   query allPhotos {
@@ -13,7 +12,7 @@ const ALL_PHOTOS_QUERY = gql`
   }
 `
 
-const Photos = () =>
+const Photos = () => (
   <Query query={ALL_PHOTOS_QUERY}>
     {({loading, data}) => loading ?
       <p>loading...</p> :
@@ -26,5 +25,6 @@ const Photos = () =>
       )
     }
   </Query>
+)
 
 export default Photos
