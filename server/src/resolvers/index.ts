@@ -1,8 +1,9 @@
-const { GraphQLScalarType } = require("graphql");
-const { authorizeWithGithub } = require("../lib");
-const { uploadStream } = require('../lib');
-const path = require('path');
-const fetch = require("node-fetch");
+
+import { GraphQLScalarType, Kind, ValueNode } from "graphql";
+import { authorizeWithGithub, uploadStream } from "../lib";
+import path from "path";
+import fetch from "node-fetch";
+
 const serialize = (value) => new Date(value).toISOString();
 const parseValue = (value) => new Date(value);
 let users = [
@@ -207,8 +208,15 @@ const resolvers = {
     description: "A valid date time value",
     parseValue,
     serialize,
-    parseLiteral: (ast) => ast.value,
+    parseLiteral: (ast: ValueNode) => {
+      switch (ast.kind) {
+      case Kind.STRING:
+        return ast.value;
+      default:
+        return null;
+      }
+    }
   }),
 };
 
-module.exports = resolvers;
+export default resolvers

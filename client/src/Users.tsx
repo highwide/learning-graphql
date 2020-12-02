@@ -1,7 +1,8 @@
 import React from "react";
-import { Query, Mutation } from "react-apollo";
-import { gql } from "apollo-boost";
+import { gql } from "@apollo/client"
+import { Query, Mutation } from '@apollo/client/react/components';
 import { ROOT_QUERY } from "./App";
+import { User } from "./generated/graphql";
 
 const ADD_FAKE_USERS_MUTATION = gql`
   mutation addFakeUsers($count: Int!) {
@@ -13,7 +14,7 @@ const ADD_FAKE_USERS_MUTATION = gql`
   }
 `;
 
-const Users = () => (
+const Users: React.FC = () => (
   <Query query={ROOT_QUERY} fetchPolicy="cache-and-network">
     {({ data, loading, refetch }) =>
       loading ? (
@@ -29,7 +30,13 @@ const Users = () => (
   </Query>
 );
 
-const UserList = ({ count, users, refetchUsers }) => (
+type UserListProps = {
+  count: number;
+  users: User[];
+  refetchUsers: () => void;
+}
+
+const UserList: React.FC<UserListProps> = ({ count, users, refetchUsers }) => (
   <div>
     <p>{count} Users</p>
     <button onClick={() => refetchUsers()}>Refetch Users</button>
