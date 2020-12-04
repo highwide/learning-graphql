@@ -2,7 +2,7 @@ import React from 'react'
 import { gql } from "@apollo/client"
 import { Query } from '@apollo/client/react/components';
 
-const ALL_PHOTOS_QUERY = gql`
+export const ALL_PHOTOS_QUERY = gql`
   query allPhotos {
     allPhotos {
       id
@@ -14,7 +14,7 @@ const ALL_PHOTOS_QUERY = gql`
 
 const Photos = () => (
   <Query query={ALL_PHOTOS_QUERY}>
-    {({loading, data}) => loading ?
+    {({ loading, data }) => loading ?
       <p>loading...</p> :
       data.allPhotos.map(photo =>
         <img

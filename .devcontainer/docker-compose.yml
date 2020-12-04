@@ -5,7 +5,7 @@ services:
     build: .
     command: sleep infinity
     volumes:
-      - ../:/app
+      - ../:/app:delegated
     env_file:
       - app.env
     ports: 

@@ -173,6 +173,19 @@ export type AllPhotosQuery = (
   )> }
 );
 
+export type PostPhotoMutationVariables = Exact<{
+  input: PostPhotoInput;
+}>;
+
+
+export type PostPhotoMutation = (
+  { __typename?: 'Mutation' }
+  & { postPhoto: (
+    { __typename?: 'Photo' }
+    & Pick<Photo, 'id' | 'name' | 'url'>
+  ) }
+);
+
 export type AddFakeUsersMutationVariables = Exact<{
   count: Scalars['Int'];
 }>;
@@ -331,6 +344,40 @@ export function useAllPhotosLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type AllPhotosQueryHookResult = ReturnType<typeof useAllPhotosQuery>;
 export type AllPhotosLazyQueryHookResult = ReturnType<typeof useAllPhotosLazyQuery>;
 export type AllPhotosQueryResult = Apollo.QueryResult<AllPhotosQuery, AllPhotosQueryVariables>;
+export const PostPhotoDocument = gql`
+    mutation postPhoto($input: PostPhotoInput!) {
+  postPhoto(input: $input) {
+    id
+    name
+    url
+  }
+}
+    `;
+export type PostPhotoMutationFn = Apollo.MutationFunction<PostPhotoMutation, PostPhotoMutationVariables>;
+
+/**
+ * __usePostPhotoMutation__
+ *
+ * To run a mutation, you first call `usePostPhotoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePostPhotoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [postPhotoMutation, { data, loading, error }] = usePostPhotoMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function usePostPhotoMutation(baseOptions?: Apollo.MutationHookOptions<PostPhotoMutation, PostPhotoMutationVariables>) {
+        return Apollo.useMutation<PostPhotoMutation, PostPhotoMutationVariables>(PostPhotoDocument, baseOptions);
+      }
+export type PostPhotoMutationHookResult = ReturnType<typeof usePostPhotoMutation>;
+export type PostPhotoMutationResult = Apollo.MutationResult<PostPhotoMutation>;
+export type PostPhotoMutationOptions = Apollo.BaseMutationOptions<PostPhotoMutation, PostPhotoMutationVariables>;
 export const AddFakeUsersDocument = gql`
     mutation addFakeUsers($count: Int!) {
   addFakeUsers(count: $count) {

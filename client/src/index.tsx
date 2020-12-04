@@ -4,19 +4,19 @@ import App from "./App";
 import { persistCache, LocalStorageWrapper } from "apollo3-cache-persist";
 import {
   ApolloProvider,
-  HttpLink,
   InMemoryCache,
   ApolloLink,
   ApolloClient,
   split,
-  } from "@apollo/client";
+} from "@apollo/client";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import { getMainDefinition } from "@apollo/client/utilities"
 import dotenv from "dotenv";
+import { createUploadLink } from 'apollo-upload-client'
 
 dotenv.config();
 
-const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' })
+const httpLink = createUploadLink({ uri: 'http://localhost:4000/graphql' })
 const wsLink = new WebSocketLink({
   uri: `ws://localhost:4000/graphql`,
   options: { reconnect: true }
