@@ -8,11 +8,8 @@ services:
       - ../:/app
     env_file:
       - app.env
-  yaichi:
-    image: mtsmfm/yaichi
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - 80:3000
+    ports: 
+      - 3000:3000
+      - 4000:4000
   mongo:
     image: mongo
