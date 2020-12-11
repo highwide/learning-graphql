@@ -2,6 +2,7 @@ import React from "react";
 import { Query } from '@apollo/client/react/components';
 import { ROOT_QUERY } from "./App";
 import { AllUsersQuery } from "./generated/graphql";
+import { NavLink } from "react-router-dom";
 
 type MeProps = {
   logout: () => void,
@@ -20,10 +21,10 @@ export const Me: React.FC<MeProps> = ({ logout, requestCode, signingIn }) => (
       ) : loading ? (
         <p>loading...</p>
       ) : (
-        <button onClick={requestCode} disabled={signingIn}>
-          Sign In with Github
-        </button>
-      )
+            <button onClick={requestCode} disabled={signingIn}>
+              Sign In with Github
+            </button>
+          )
     }
   </Query>
 );
@@ -39,5 +40,6 @@ const CurrentUser: React.FC<CurrentUserProps> = ({ name, avatar, logout }) => (
     <img src={avatar} width={48} height={48} alt="" />
     <h1>{name}</h1>
     <button onClick={logout}>logout</button>
+    <NavLink to="/newPhoto">Post Photo</NavLink>
   </div>
 );

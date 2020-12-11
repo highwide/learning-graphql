@@ -1,7 +1,30 @@
+import { gql } from '@apollo/client';
+import { Mutation } from '@apollo/client/react/components';
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom';
+import { PostPhotoMutation } from './generated/graphql';
+import { ALL_PHOTOS_QUERY } from './Photos';
 
-const PostPhoto: React.FC = () => {
+const POST_PHOTO_MUTATION = gql`
+  mutation postPhoto($input: PostPhotoInput!){
+    postPhoto(input:$input) {
+      id
+      name
+      url
+    }
+  }
+`
+
+const updatePhotos = (cache, { data: { postPhoto } }) => {
+  const data = cache.readQuery({ query: ALL_PHOTOS_QUERY })
+  data.allPhotos = [
+    postPhoto,
+    ...data.allPhotos
+  ]
+  cache.writeQuery({ query: ALL_PHOTOS_QUERY, data })
+}
+
+export const PostPhoto: React.FC = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState('PORTRAIT');
@@ -9,8 +32,7 @@ const PostPhoto: React.FC = () => {
 
   const history = useHistory();
 
-  // const postPhoto = (mutation) => {
-  const postPhoto = () => {
+  const postPhoto = (_mutation) => {
     console.log('todo: post photo')
     console.log(`${{ name }} / ${{ description }} / ${{ category }} / ${{ file }}`)
   }
@@ -59,10 +81,13 @@ const PostPhoto: React.FC = () => {
           setFile(target.files && target.files.length ? target.files[0] : "")
         }
       />
-      <div style={{ margin: "10px" }}>
-        <button onClick={() => postPhoto()}>Post Photo</button>
+      <div style={{ margin: '10px' }}>
+        <Mutation<PostPhotoMutation> mutation={POST_PHOTO_MUTATION} update={updatePhotos}>
+          {mutation => <button onClick={() => postPhoto(mutation)}>Post Photo</button>}
+
+        </Mutation>
         <button onClick={() => history.goBack()}>Cancel</button>
       </div>
-    </form>
+    </form >
   );
 }

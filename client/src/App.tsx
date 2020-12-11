@@ -1,9 +1,11 @@
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import Users from "./Users";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { useApolloClient, useSubscription, gql } from "@apollo/client";
 import AuthorizedUser from "./AuthorizedUser";
 import { AllUsersQuery, ListenForUsersSubscription } from "./generated/graphql";
+import Photos from "./Photos";
+import { PostPhoto } from "./PostPhoto";
 
 export const ROOT_QUERY = gql`
   query allUsers {
@@ -58,10 +60,17 @@ const App: React.FC = () => {
 
   return (
     <BrowserRouter>
-      <div>
-        <AuthorizedUser />
-        <Users />
-      </div>
+      <Switch>
+        <Route exact path="/" component={
+          () => <>
+            <AuthorizedUser />
+            <Users />
+            <Photos />
+          </>
+        } />
+        <Route path="/newPhoto" component={PostPhoto} />
+        <Route component={({ location }) => <h1>"{location.pathname}" not found</h1>} />
+      </Switch>
     </BrowserRouter>
   )
 }
